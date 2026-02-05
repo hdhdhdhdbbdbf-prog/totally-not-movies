@@ -3,254 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Future Frameboard</title>
+    <title>Unblocked Movie OS</title>
     <style>
-        /* --- RESET & VARIABLES --- */
+        /* --- CORE VARIABLES --- */
         :root {
-            --bg-dark: #0a0a0c;
-            --primary: #00f2ff; /* Cyan Neon */
-            --secondary: #7000ff; /* Purple Neon */
+            --bg-dark: #0f0f11;
+            --bg-card: #1a1a1d;
+            --primary: #e50914; /* Netflix Red vibe */
+            --accent: #00f2ff;
             --text-main: #ffffff;
-            --glass: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --blur: 10px;
-            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --text-dim: #a1a1a1;
+            --transition: all 0.3s ease;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
         }
 
         body {
             background-color: var(--bg-dark);
             color: var(--text-main);
-            overflow: hidden; /* No scroll on main body, only inside frame */
             height: 100vh;
-            display: flex;
-        }
-
-        /* --- NAVIGATION (LEFT SIDEBAR) --- */
-        .menu-toggle {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(var(--blur));
-            width: 45px;
-            height: 45px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .menu-toggle:hover {
-            border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
-        }
-
-        .hamburger span {
-            display: block;
-            width: 20px;
-            height: 2px;
-            background: white;
-            position: relative;
-            transition: var(--transition);
-        }
-
-        .hamburger span::before, .hamburger span::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: white;
-            left: 0;
-            transition: var(--transition);
-        }
-
-        .hamburger span::before { top: -6px; }
-        .hamburger span::after { top: 6px; }
-
-        .menu-toggle.active .hamburger span { background: transparent; }
-        .menu-toggle.active .hamburger span::before { top: 0; transform: rotate(45deg); }
-        .menu-toggle.active .hamburger span::after { top: 0; transform: rotate(-45deg); }
-
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: -280px;
-            width: 280px;
-            height: 100vh;
-            background: rgba(10, 10, 12, 0.98);
-            border-right: 1px solid var(--primary);
-            box-shadow: 5px 0 30px rgba(0, 242, 255, 0.1);
-            padding: 80px 30px;
-            transition: var(--transition);
-            z-index: 999;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            gap: 15px;
         }
 
-        .sidebar.active {
+        /* --- KEY SYSTEM (LOCK SCREEN) --- */
+        #lock-screen {
+            position: fixed;
+            top: 0;
             left: 0;
-        }
-
-        .sidebar h3 {
-            color: var(--text-dim);
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            border-bottom: 1px solid var(--glass-border);
-            padding-bottom: 5px;
-        }
-
-        .sidebar a {
-            text-decoration: none;
-            color: #ccc;
-            font-size: 1.1rem;
-            padding: 12px 15px;
-            border-radius: 8px;
-            transition: var(--transition);
-            border: 1px solid transparent;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Active/Hover state for links */
-        .sidebar a:hover, .sidebar a:focus {
-            background: rgba(0, 242, 255, 0.1);
-            border-color: rgba(0, 242, 255, 0.3);
-            color: var(--primary);
-            padding-left: 20px;
-        }
-
-        /* --- MAIN FRAMEBOARD AREA --- */
-        .main-content {
-            flex: 1;
-            height: 100vh;
-            padding: 20px 20px 20px 80px; /* Padding left leaves room for closed toggle */
-            transition: var(--transition);
-            position: relative;
-        }
-
-        /* The Frame Container */
-        .frame-container {
             width: 100%;
             height: 100%;
             background: #000;
-            border-radius: 20px;
-            overflow: hidden;
-            border: 1px solid var(--glass-border);
-            position: relative;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s;
         }
 
-        /* Glowing border effect */
-        .frame-container::before {
-            content: '';
+        .lock-box {
+            text-align: center;
+            background: #111;
+            padding: 40px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            box-shadow: 0 0 50px rgba(229, 9, 20, 0.2);
+        }
+
+        .lock-box h2 {
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+
+        .lock-input {
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: 1px solid #333;
+            background: #222;
+            color: white;
+            font-size: 16px;
+            outline: none;
+            width: 200px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .unlock-btn {
+            padding: 10px 25px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+
+        .unlock-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        .error-msg {
+            color: red;
+            font-size: 12px;
+            margin-top: 10px;
+            min-height: 15px;
+            opacity: 0;
+        }
+
+        /* --- HEADER --- */
+        header {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
             position: absolute;
-            inset: 0;
-            border-radius: 20px;
-            padding: 1px;
-            background: linear-gradient(45deg, transparent, var(--primary), transparent);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
-            opacity: 0.5;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            pointer-events: none; /* Let clicks pass through to grid */
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+            pointer-events: auto;
+            cursor: pointer;
+        }
+
+        /* --- MOVIE GRID (HOME) --- */
+        #home-view {
+            padding: 100px 40px 40px 40px;
+            overflow-y: auto;
+            height: 100%;
+            opacity: 1;
+            transition: var(--transition);
+        }
+
+        .grid-title {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            color: var(--text-dim);
+        }
+
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            aspect-ratio: 16/9; /* Widescreen thumbnail look */
+            border: 1px solid transparent;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            z-index: 10;
+            border-color: var(--text-main);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #2a2a2a; /* Fallback color */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: #444;
+        }
+
+        /* Gradient backgrounds for cards to look cool without real images */
+        .g1 { background: linear-gradient(45deg, #11998e, #38ef7d); }
+        .g2 { background: linear-gradient(45deg, #ff416c, #ff4b2b); }
+        .g3 { background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcb045); }
+        .g4 { background: linear-gradient(45deg, #00f2ff, #001f3f); }
+
+        .card-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            opacity: 0; /* Hidden until hover */
+            transition: var(--transition);
+        }
+
+        .card:hover .card-info {
+            opacity: 1;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* --- PLAYER VIEW (IFRAME) --- */
+        #player-view {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 200;
+            display: none; /* Hidden by default */
+            flex-direction: column;
+        }
+
+        .player-bar {
+            height: 50px;
+            background: #111;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid #333;
+        }
+
+        .back-btn {
+            background: transparent;
+            color: #ccc;
+            border: 1px solid #333;
+            padding: 5px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .back-btn:hover {
+            color: white;
+            border-color: white;
         }
 
         iframe {
-            width: 100%;
-            height: 100%;
+            flex: 1;
             border: none;
-            background: white; /* Most external sites need a white base */
-        }
-
-        /* Loading indicator styling */
-        .loader {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: var(--primary);
-            font-family: monospace;
-            z-index: -1; /* Behind iframe */
+            width: 100%;
+            background: white;
         }
 
     </style>
 </head>
 <body>
 
-    <div class="menu-toggle" onclick="toggleMenu()">
-        <div class="hamburger"><span></span></div>
+    <div id="lock-screen">
+        <div class="lock-box">
+            <h2>Secure Access</h2>
+            <input type="password" id="passcode" class="lock-input" placeholder="Enter Key...">
+            <br>
+            <button class="unlock-btn" onclick="checkKey()">ENTER</button>
+            <div class="error-msg" id="error-msg">Access Denied</div>
+        </div>
     </div>
 
-    <nav class="sidebar">
-        <h3>System Nav</h3>
+    <header>
+        <div class="logo" onclick="closePlayer()">UNBLOCKED MOVIES OS</div>
+    </header>
+
+    <div id="home-view">
+        <h3 class="grid-title">Recommended for You</h3>
         
-        <a href="https://script.google.com/macros/s/AKfycbzbKEkS_upUwMfUemAANbH2Nl01J8R-aknV6rNQY6P-GbddXWLnEJVHZiA0c-9Lb1iQ/exec" target="view-frame">
-            Wiki Database
-        </a>
-
-        <a href="https://script.google.com/macros/s/AKfycbx-aQ-Vnt6u84ArV6AkHZp4RfEMgypI2gmKfBZJrX0YvBteHwmtQT8WMjIA5Gj6zPkT1Q/exec" target="view-frame">
-            Bing Search
-        </a>
-
-        <a href="https://example.com" target="view-frame">
-            Example Node
-        </a>
-        
-        <a href="about:blank" target="view-frame">
-            Blank Terminal
-        </a>
-
-    </nav>
-
-    <main class="main-content">
-        <div class="frame-container">
-            <div class="loader">INITIALIZING LINK...</div>
+        <div class="movie-grid">
             
-            <iframe 
-                name="view-frame" 
-                src="https://www.wikipedia.org" 
-                title="Main Viewer">
-            </iframe>
+            <div class="card" onclick="openSite('https://script.google.com/macros/s/AKfycbzbKEkS_upUwMfUemAANbH2Nl01J8R-aknV6rNQY6P-GbddXWLnEJVHZiA0c-9Lb1iQ/exec')">
+                <div class="card-img g1"></div>
+                <div class="card-info">
+                    <div class="card-title">hianime.to</div>
+                </div>
+            </div>
 
+            <div class="card" onclick="openSite('https://script.google.com/macros/s/AKfycbx-aQ-Vnt6u84ArV6AkHZp4RfEMgypI2gmKfBZJrX0YvBteHwmtQT8WMjIA5Gj6zPkT1Q/exec')">
+                <div class="card-img g2"></div>
+                <div class="card-info">
+                    <div class="card-title">123movies</div>
+                </div>
+            </div>
+
+            <div class="card" onclick="openSite('https://www.wikipedia.org')">
+                <div class="card-img g3"></div>
+                <div class="card-info">
+                    <div class="card-title">Wikipedia</div>
+                </div>
+            </div>
+
+            <div class="card" onclick="openSite('https://example.com')">
+                <div class="card-img g4"></div>
+                <div class="card-info">
+                    <div class="card-title">System Node</div>
+                </div>
+            </div>
+
+             </div>
+    </div>
+
+    <div id="player-view">
+        <div class="player-bar">
+            <button class="back-btn" onclick="closePlayer()">← Back to Browse</button>
+            <span style="margin-left: 15px; font-size: 14px; color: #666;" id="now-playing">Viewing External Source</span>
         </div>
-    </main>
+        <iframe id="main-frame" src="about:blank"></iframe>
+    </div>
 
     <script>
-        function toggleMenu() {
-            const menu = document.querySelector('.sidebar');
-            const toggle = document.querySelector('.menu-toggle');
-            menu.classList.toggle('active');
-            toggle.classList.toggle('active');
+        // --- CONFIGURATION ---
+        const CORRECT_KEY = "1234"; // CHANGE THIS TO YOUR PASSWORD
+
+        // --- KEY SYSTEM FUNCTIONS ---
+        const passcodeField = document.getElementById('passcode');
+        
+        // Allow pressing "Enter" key
+        passcodeField.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                checkKey();
+            }
+        });
+
+        function checkKey() {
+            const input = passcodeField.value;
+            const error = document.getElementById('error-msg');
+            const lockScreen = document.getElementById('lock-screen');
+
+            if (input === CORRECT_KEY) {
+                lockScreen.style.opacity = '0';
+                setTimeout(() => {
+                    lockScreen.style.display = 'none';
+                }, 500);
+            } else {
+                error.style.opacity = '1';
+                passcodeField.value = '';
+                setTimeout(() => { error.style.opacity = '0'; }, 2000);
+            }
         }
 
-        // Optional: Auto-close menu on mobile when a link is clicked
-        const links = document.querySelectorAll('.sidebar a');
-        links.forEach(link => {
-            link.addEventListener('click', () => {
-                if(window.innerWidth < 800) {
-                    toggleMenu();
-                }
-            });
-        });
+        // --- NAVIGATION FUNCTIONS ---
+        const playerView = document.getElementById('player-view');
+        const mainFrame = document.getElementById('main-frame');
+        const nowPlaying = document.getElementById('now-playing');
+
+        function openSite(url) {
+            mainFrame.src = url;
+            playerView.style.display = 'flex';
+            nowPlaying.innerText = "Viewing: " + url;
+        }
+
+        function closePlayer() {
+            playerView.style.display = 'none';
+            mainFrame.src = 'about:blank'; // Stop the site from running in background
+        }
     </script>
 </body>
 </html>
-
-
-
-
