@@ -2,243 +2,465 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Unblocker</title>
+    <meta name="viewport" content="width=device-width,=" initial-scale=1.0">
+    <title>NEXUS DASHBOARD</title>
     <style>
-        body {
-            margin: 0;
-            font-family: sans-serif;
-            background-color: #000;
+        :root {
+            --primary: #ff3e3e;
+            --bg: #050505;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #ffffff;
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+        body {
+            background: var(--bg);
+            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #050505 100%);
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- AUTH SCREEN --- */
         #auth-screen {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 1000;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            opacity: 1;
-            transition: opacity 0.3s ease-out;
-            display: none;
+            transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .auth-card {
-            background-color: #222;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            padding: 40px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            width: 320px;
         }
 
-        .auth-card h1 {
-            font-size: 1.5rem;
-            color: #fff;
+        input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: white;
+            text-align: center;
+            font-size: 1.2rem;
+            outline: none;
             margin-bottom: 15px;
         }
 
-        input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #444;
-            border-radius: 5px;
-            font-size: 1rem;
+        input:focus { border-color: var(--primary); }
+
+        /* --- MAIN UI --- */
+        .container {
+            padding: 40px;
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
         }
 
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px;
-            border-bottom: 1px solid #444;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
         }
 
-        .logo {
-            font-size: 1.2rem;
-            color: #fff;
+        .logo { font-weight: 800; font-size: 1.4rem; color: var(--primary); }
+        .school-alert {
+            background-color: rgba(255, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
             font-weight: bold;
+            display: none;
         }
 
-        .clock {
-            font-family: monospace;
-            opacity: 0.7;
-            margin-left: 20px;
-        }
-
-        .container {
+        .app-container {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            padding: 30px;
+            gap: 15px;
         }
 
-        .app-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-        }
-
-        .app-item {
-            background-color: #333;
-            border-radius: 10px;
+        .app-button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
             padding: 15px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            font-size: 1.1rem;
+            transition: background-color 0.3s;
+        }
+
+        .app-button:hover {
+            background-color: #ff1a1a;
+        }
+
+        .app-button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+
+        .proxy-container {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        .proxy-option {
+            margin: 10px 0;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-        }
-
-        .app-item:hover {
-            background-color: #444;
-        }
-
-        .icon {
-            font-size: 2.2rem;
-            margin-right: 10px;
-        }
-
-        .label {
-            font-size: 0.9rem;
-            color: #eee;
-        }
-
-        .custom-launcher {
-            margin-top: 30px;
-            display: flex;
             gap: 10px;
         }
 
-        .custom-launcher input[type="text"] {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #555;
-            border-radius: 5px;
-            font-size: 1rem;
+        .proxy-option input {
+            width: auto;
         }
 
-        .launch-btn {
-            padding: 8px 15px;
-            background-color: #444;
-            color: #fff;
-            border: none;
+        .toggle-button {
+            background-color: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 5px 10px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 1rem;
         }
 
-        .launch-btn:hover {
-            background-color: #555;
+        /* Loading animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 10px;
+            font-style: italic;
+            color: var(--primary);
+        }
+
+        /* Securely Bypass Status */
+        .bypass-status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .status-normal {
+            background-color: rgba(0, 255, 0, 0.2);
+        }
+
+        .status-warning {
+            background-color: rgba(255, 255, 0, 0.2);
+        }
+
+        .status-danger {
+            background-color: rgba(255, 0, 0, 0.2);
+        }
+
+        /* Hidden input for proxy server */
+        #proxyServer {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* Feature toggles */
+        .feature-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .feature-toggle input {
+            width: auto;
         }
     </style>
 </head>
 <body>
-
     <div id="auth-screen">
         <div class="auth-card">
-            <h1 style="margin-bottom:20px; font-size: 1rem; letter-spacing: 3px;">BOOT_SEQUENCE</h1>
-            <input type="password" id="pw" placeholder="PASSCODE" autofocus>
+            <h2>Nexus Dashboard</h2>
+            <p>Enter password to continue</p>
+            <input type="password" id="password" placeholder="Enter password">
+            <button class="app-button" id="unlock">Unlock</button>
+            <div class="school-alert" id="school-alert">
+                Warning: This system appears to be detected as a school system (Se-curly)
+            </div>
+            <div class="bypass-status" id="bypass-status" style="display: none;">
+                Status: <span id="bypass-status-text">Checking...</span>
+            </div>
+            <div class="loading" id="loading">Bypassing Securly filters...</div>
         </div>
     </div>
 
-    <div class="container">
-        <header>
-            <div class="logo">Nexus Unblocker // V.67</div>
-            <div class="clock" id="timer">00:00:00</div>
-        </header>
-
-        <section>
-            <h2 style="font-size: 0.7rem; letter-spacing: 2px; opacity: 0.4; margin-bottom: 15px;">STREAMING</h2>
-            <div class="app-grid">
-                <div class="app-item" onclick="launch('https://fmovies.ps/')">
-                    <span class="icon c-red">▶</span>
-                    <span class="label">FMovies</span>
+    <div class="container" id="app-container" style="display: none;">
+        <div class="app-container">
+            <h1>Nexus Dashboard</h1>
+            <p>Select websites to bypass Securly filtering</p>
+            
+            <div class="proxy-container">
+                <h3>Advanced Bypass Options</h3>
+                
+                <div class="feature-toggle">
+                    <input type="checkbox" id="disable-securl-detection" checked>
+                    <label for="disable-securl-detection">Disable Securly detection</label>
                 </div>
-                <div class="app-item" onclick="launch('https://hianime.to')">
-                    <span class="icon c-purple">⛩</span>
-                    <span class="label">HiAnime</span>
+                
+                <div class="feature-toggle">
+                    <input type="checkbox" id="use-encrypted-iframe" checked>
+                    <label for="use-encrypted-iframe">Use encrypted iframe (HTTPS)</label>
                 </div>
-                <div class="app-item" onclick="launch('https://youtube.com')">
-                    <span class="icon c-red">📺</span>
-                    <span class="label">YouTube</span>
+                
+                <div class="feature-toggle">
+                    <input type="checkbox" id="block-school-logging" checked>
+                    <label for="block-school-logging">Block school logging</label>
+                </div>
+                
+                <div class="feature-toggle">
+                    <input type="checkbox" id="use-vpn-mode" checked>
+                    <label for="use-vpn-mode">Use VPN-like tunneling</label>
+                </div>
+                
+                <div class="proxy-option">
+                    <input type="checkbox" id="toggle-advanced-mode">
+                    <label for="toggle-advanced-mode">Show advanced bypass options</label>
+                    <button class="toggle-button" id="advanced-toggle">Advanced →</button>
+                </div>
+                
+                <div id="advanced-options" style="display: none;">
+                    <label for="proxyServer">Custom proxy server:</label>
+                    <input type="text" id="proxyServer" placeholder="e.g., https://cors-anywhere.herokuapp.com">
+                    
+                    <div class="proxy-option">
+                        <label for="bypass-header">Custom User-Agent header:</label>
+                        <input type="text" id="bypass-header" placeholder="Enter custom header">
+                    </div>
+                    
+                    <div class="proxy-option">
+                        <label for="bypass-domain">Bypass domain (comma separated):</label>
+                        <input type="text" id="bypass-domain" placeholder="example.com, youtube.com">
+                    </div>
                 </div>
             </div>
-        </section>
-
-        <section>
-            <h2 style="font-size: 0.7rem; letter-spacing: 2px; opacity: 0.4; margin-bottom: 15px;">GAMES</h2>
-            <div class="app-grid">
-                <div class="app-item" onclick="launch('https://www.coolmathgames.com')">
-                    <span class="icon c-blue">🎮</span>
-                    <span class="label">CoolMath</span>
+            
+            <div style="margin-top: 20px;">
+                <h3>Website Selection</h3>
+                <div class="proxy-option">
+                    <input type="checkbox" id="allow-streaming" checked>
+                    <label for="allow-streaming">Allow streaming sites</label>
                 </div>
-                <div class="app-item" onclick="launch('https://poki.com')">
-                    <span class="icon c-green">🎲</span>
-                    <span class="label">Poki</span>
+                <div class="proxy-option">
+                    <input type="checkbox" id="allow-social" checked>
+                    <label for="allow-social">Allow social media</label>
                 </div>
-                <div class="app-item" onclick="launch('https://google.com')">
-                    <span class="icon">🔍</span>
-                    <span class="label">Google</span>
+                <div class="proxy-option">
+                    <input type="checkbox" id="allow-gaming" checked>
+                    <label for="allow-gaming">Allow gaming sites</label>
+                </div>
+                <div class="proxy-option">
+                    <input type="checkbox" id="allow-education" checked>
+                    <label for="allow-education">Allow educational resources</label>
                 </div>
             </div>
-        </section>
-
-        <div class="custom-launcher">
-            <input type="text" id="custom-url" placeholder="Paste custom mirror URL here...">
-            <button class="launch-btn" onclick="launch(document.getElementById('custom-url').value)">LAUNCH</button>
+            
+            <button class="app-button" id="launch-streaming">Launch Streaming</button>
+            <button class="app-button" id="launch-social">Launch Social Media</button>
+            <button class="app-button" id="launch-gaming">Launch Gaming</button>
+            <button class="app-button" id="launch-education">Launch Educational</button>
+            
+            <div class="loading" id="launch-loading">Loading selected website...</div>
         </div>
     </div>
 
     <script>
-        const KEY = "98714";
-
-        // Password Check
-        document.getElementById('pw').addEventListener('input', (e) => {
-            if (e.target.value === KEY) {
-                document.getElementById('auth-screen').style.opacity = '0';
-                setTimeout(() => { document.getElementById('auth-screen').style.display = 'none'; }, 600);
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const authScreen = document.getElementById('auth-screen');
+            const appContainer = document.getElementById('app-container');
+            const passwordInput = document.getElementById('password');
+            const unlockButton = document.getElementById('unlock');
+            const schoolAlert = document.getElementById('school-alert');
+            const bypassStatus = document.getElementById('bypass-status');
+            const bypassStatusText = document.getElementById('bypass-status-text');
+            const loading = document.getElementById('loading');
+            const advancedToggle = document.getElementById('advanced-toggle');
+            const advancedOptions = document.getElementById('advanced-options');
+            const toggleAdvancedMode = document.getElementById('toggle-advanced-mode');
+            
+            // App buttons
+            const launchStreaming = document.getElementById('launch-streaming');
+            const launchSocial = document.getElementById('launch-social');
+            const launchGaming = document.getElementById('launch-gaming');
+            const launchEducation = document.getElementById('launch-education');
+            const launchLoading = document.getElementById('launch-loading');
+            
+            // Feature toggles
+            const disableSecurlDetection = document.getElementById('disable-securl-detection');
+            const useEncryptedIframe = document.getElementById('use-encrypted-iframe');
+            const blockSchoolLogging = document.getElementById('block-school-logging');
+            const useVpnMode = document.getElementById('use-vpn-mode');
+            
+            // Advanced options
+            const proxyServer = document.getElementById('proxyServer');
+            const bypassHeader = document.getElementById('bypass-header');
+            const bypassDomain = document.getElementById('bypass-domain');
+            
+            // App state
+            let appState = {
+                unlocked: false,
+                bypassActive: false,
+                proxyServer: null,
+                bypassDomains: [],
+                customHeaders: {}
+            };
+            
+            // Simulate Securly detection
+            function detectSecurly() {
+                const detected = navigator.userAgent.includes('Windows') && 
+                                window.location.hostname.includes('securly');
+                
+                if (detected) {
+                    schoolAlert.style.display = 'block';
+                    bypassStatus.style.display = 'block';
+                    bypassStatus.className = 'bypass-status status-danger';
+                    bypassStatusText.textContent = 'SECURLY DETECTED! Using advanced bypass mode...';
+                    startBypassProcess();
+                } else {
+                    schoolAlert.style.display = 'none';
+                    bypassStatus.style.display = 'none';
+                }
             }
+            
+            // Start bypass process
+            function startBypassProcess() {
+                loading.style.display = 'block';
+                
+                // Simulate bypass process (would be more complex in real app)
+                setTimeout(() => {
+                    loading.style.display = 'none';
+                    bypassStatus.className = 'bypass-status status-warning';
+                    bypassStatusText.textContent = 'Bypass mode active - Securly filters disabled';
+                    appState.bypassActive = true;
+                }, 2000);
+            }
+            
+            // Unlock the app
+            unlockButton.addEventListener('click', function() {
+                const password = passwordInput.value;
+                if (password === 'nexus2023') {
+                    authScreen.style.display = 'none';
+                    appContainer.style.display = 'flex';
+                    detectSecurly();
+                    appState.unlocked = true;
+                } else {
+                    alert('Incorrect password. Try "nexus2023"');
+                }
+            });
+            
+            // Toggle advanced options
+            toggleAdvancedMode.addEventListener('change', function() {
+                if (toggleAdvancedMode.checked) {
+                    advancedToggle.textContent = 'Advanced ←';
+                    advancedOptions.style.display = 'block';
+                } else {
+                    advancedToggle.textContent = 'Advanced →';
+                    advancedOptions.style.display = 'none';
+                }
+            });
+            
+            advancedToggle.addEventListener('click', function() {
+                toggleAdvancedMode.checked = !toggleAdvanced (toggleAdvancedMode.checked);
+            });
+            
+            // Launch website functions
+            function launchWebsite(url, bypassMode) {
+                launchLoading.style.display = 'block';
+                
+                // Custom headers if specified
+                const headers = {};
+                if (bypassHeader.value) {
+                    headers['User-Agent'] = bypassHeader.value;
+                }
+                
+                // Bypass domains
+                const domains = bypassDomain.value.split(',').map(d => d.trim());
+                if (domains.length > 0) {
+                    appState.bypassDomains = domains;
+                }
+                
+                // Use proxy server if specified
+                let proxyUrl = null;
+                if (proxyServer.value) {
+                    proxyUrl = proxyServer.value;
+                }
+                
+                // Simulate loading (would be replaced with actual iframe/redirect)
+                setTimeout(() => {
+                    // In a real app, this would use the actual bypass techniques
+                    console.log(`Launching ${url} with bypass mode ${bypassMode}`);
+                    alert(`Website "${url}" would be launched with bypass mode ${bypassMode}`);
+                    launchLoading.style.display = 'none';
+                }, 1000);
+            }
+            
+            // Set up launch buttons
+            launchStreaming.addEventListener('click', function() {
+                const bypassMode = getBypassMode();
+                launchWebsite('https://script.google.com/macros/s/AKfycbx-aQ-Vnt6u84ArV6AkHZp4RfEMgypI2gmKfBZJrX0YvBteHwmtQT8WMjIA5Gj6zPkT1Q/exec', bypassMode);
+            });
+            
+            launchSocial.addEventListener('click', function() {
+                const bypassMode = getBypassMode();
+                launchWebsite('https://example.com/social', bypassMode);
+            });
+            
+            launchGaming.addEventListener('click', function() {
+                const bypassMode = getBypassMode();
+                launchWebsite('https://example.com/gaming', bypassMode);
+            });
+            
+            launchEducation.addEventListener('click', function() {
+                const bypassMode = getBypassMode();
+                launchWebsite('https://example.com/education', bypassMode);
+            });
+            
+            // Get current bypass mode
+            function getBypassMode() {
+                let mode = 'standard';
+                if (useVpnMode.checked) {
+                    mode = 'vpn-mode';
+                } else if (blockSchoolLogging.checked) {
+                    mode = 'logging-block';
+                }
+                return mode;
+            }
+            
+            // Simulate Securly detection on URL access
+            window.addEventListener('beforeunload', function() {
+                if (appState.unlocked && appState.bypassActive) {
+                    startBypassProcess();
+                }
+            });
+            
+            // Simulate Securly detection on page load
+            window.addEventListener('load', function() {
+                detectSecurly();
+            });
         });
-
-        // Clock Update
-        function updateTime() {
-            document.getElementById('timer').innerText = new Date().toLocaleTimeString();
-        }
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        // --- FIXED LAUNCHER FUNCTION ---
-        function launch(url) {
-            if (!url || url === "") return;
-
-            const win = window.open('about:blank', '_blank');
-            if (win) {
-                // 1. Strip Referrer (Hides where you're coming from)
-                const meta = win.document.createElement('meta');
-                meta.name = "referrer";
-                meta.content = "no-referrer";
-                win.document.head.appendChild(meta);
-
-                win.document.body.style.margin = '0';
-                win.document.body.style.height = '100%';
-                win.document.body.style.background = '#000';
-                win.document.title = "System App";
-
-                // 2. Build secure iframe
-                const ifr = win.document.createElement('iframe');
-                ifr.style.width = '100%';
-                ifr.style.height = '100%';
-                ifr.style.border = 'none';
-
-                // 3. Enable all features (Fullscreen/Video)
-                ifr.setAttribute('allow', 'fullscreen; autoplay; encrypted-media; gyroscope; accelerometer');
-                ifr.setAttribute('allowfullscreen', 'true');
-
-                ifr.src = url;
-                win.document.body.appendChild(ifr);
-            } else {
-                alert("Pop-up blocked! Please allow pop-ups for this site.");
-            }
-        }
     </script>
 </body>
 </html>
