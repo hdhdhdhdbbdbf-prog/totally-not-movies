@@ -9,7 +9,7 @@
         :root {
             --bg-dark: #0f0f11;
             --bg-card: #1a1a1d;
-            --primary: #e50914; /* Netflix Red vibe */
+            --primary: #e50914; 
             --accent: #00f2ff;
             --text-main: #ffffff;
             --text-dim: #a1a1a1;
@@ -32,7 +32,7 @@
             flex-direction: column;
         }
 
-        /* --- KEY SYSTEM (LOCK SCREEN) --- */
+        /* --- LOCK SCREEN --- */
         #lock-screen {
             position: fixed;
             top: 0;
@@ -55,13 +55,6 @@
             border-radius: 10px;
             border: 1px solid #333;
             box-shadow: 0 0 50px rgba(229, 9, 20, 0.2);
-        }
-
-        .lock-box h2 {
-            margin-bottom: 20px;
-            letter-spacing: 2px;
-            color: var(--primary);
-            text-transform: uppercase;
         }
 
         .lock-input {
@@ -88,16 +81,10 @@
             transition: var(--transition);
         }
 
-        .unlock-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px var(--primary);
-        }
-
         .error-msg {
             color: red;
             font-size: 12px;
             margin-top: 10px;
-            min-height: 15px;
             opacity: 0;
         }
 
@@ -106,37 +93,25 @@
             padding: 20px 40px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
             background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
             position: absolute;
             top: 0;
             width: 100%;
             z-index: 100;
-            pointer-events: none; /* Let clicks pass through to grid */
         }
 
         .logo {
             font-size: 24px;
             font-weight: 800;
             color: var(--primary);
-            text-shadow: 0 0 10px rgba(0,0,0,0.5);
-            pointer-events: auto;
             cursor: pointer;
         }
 
-        /* --- MOVIE GRID (HOME) --- */
+        /* --- GRID --- */
         #home-view {
-            padding: 100px 40px 40px 40px;
+            padding: 120px 40px 40px 40px;
             overflow-y: auto;
             height: 100%;
-            opacity: 1;
-            transition: var(--transition);
-        }
-
-        .grid-title {
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-            color: var(--text-dim);
         }
 
         .movie-grid {
@@ -152,106 +127,43 @@
             cursor: pointer;
             transition: var(--transition);
             position: relative;
-            aspect-ratio: 16/9; /* Widescreen thumbnail look */
+            aspect-ratio: 16/9;
             border: 1px solid transparent;
         }
 
         .card:hover {
             transform: scale(1.05);
-            z-index: 10;
             border-color: var(--text-main);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .card-img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            background: #2a2a2a; /* Fallback color */
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 30px;
-            color: #444;
         }
 
-        /* Gradient backgrounds for cards to look cool without real images */
-        .g1 { background-image: linear-gradient(45deg, #11998e, #38ef7d); }
+        .g1 { background: linear-gradient(45deg, #11998e, #38ef7d); }
         .g2 { background: linear-gradient(45deg, #ff416c, #ff4b2b); }
-        .g3 { background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcb045); }
+        .g3 { background: linear-gradient(45deg, #833ab4, #fd1d1d); }
         .g4 { background: linear-gradient(45deg, #00f2ff, #001f3f); }
 
         .card-info {
             position: absolute;
             bottom: 0;
-            left: 0;
-            width: 100%;
             padding: 10px;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-            opacity: 0; /* Hidden until hover */
-            transition: var(--transition);
-        }
-
-        .card:hover .card-info {
-            opacity: 1;
-        }
-
-        .card-title {
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        /* --- PLAYER VIEW (IFRAME) --- */
-        #player-view {
-            position: fixed;
-            top: 0;
-            left: 0;
+            background: rgba(0,0,0,0.8);
             width: 100%;
-            height: 100%;
-            background: #000;
-            z-index: 200;
-            display: none; /* Hidden by default */
-            flex-direction: column;
+            font-size: 12px;
         }
-
-        .player-bar {
-            height: 50px;
-            background: #111;
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            border-bottom: 1px solid #333;
-        }
-
-        .back-btn {
-            background: transparent;
-            color: #ccc;
-            border: 1px solid #333;
-            padding: 5px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .back-btn:hover {
-            color: white;
-            border-color: white;
-        }
-
-        iframe {
-            flex: 1;
-            border: none;
-            width: 100%;
-            background: white;
-        }
-
     </style>
 </head>
 <body>
 
     <div id="lock-screen">
         <div class="lock-box">
-            <h2>Secure Access</h2>
+            <h2 style="color:var(--primary); margin-bottom:15px;">SECURE ACCESS</h2>
             <input type="password" id="passcode" class="lock-input" placeholder="Enter Key...">
             <br>
             <button class="unlock-btn" onclick="checkKey()">ENTER</button>
@@ -260,101 +172,82 @@
     </div>
 
     <header>
-        <div class="logo" onclick="closePlayer()">UNBLOCKED MOVIES OS v67 </div>
+        <div class="logo">UNBLOCKED MOVIES OS v67</div>
     </header>
 
     <div id="home-view">
-        <h3 class="grid-title">Recommended for You</h3>
-        
+        <h3 style="margin-bottom:20px; color:var(--text-dim)">Recommended for You</h3>
         <div class="movie-grid">
             
-            <div class="card" onclick="openSite('https://script.google.com/macros/s/AKfycbzbKEkS_upUwMfUemAANbH2Nl01J8R-aknV6rNQY6P-GbddXWLnEJVHZiA0c-9Lb1iQ/exec')">
+            <div class="card" onclick="launchSite('https://fmovies.ps/')">
                 <div class="card-img g1"></div>
-                <div class="card-info">
-                    <div class="card-title">F movies</div>
-                </div>
+                <div class="card-info">F Movies</div>
             </div>
 
-            <div class="card" onclick="openSite('https://script.google.com/macros/s/AKfycbx-aQ-Vnt6u84ArV6AkHZp4RfEMgypI2gmKfBZJrX0YvBteHwmtQT8WMjIA5Gj6zPkT1Q/exec')">
+            <div class="card" onclick="launchSite('https://hianime.to')">
                 <div class="card-img g2"></div>
-                <div class="card-info">
-                    <div class="card-title">hianime.to</div>
-                </div>
+                <div class="card-info">HiAnime</div>
             </div>
 
-            <div class="card" onclick="openSite('https://script.google.com/macros/s/AKfycbz2vwKQf_sELTrB0mVHMaMY2wT5QCgIuMCqvL-U6yGgaXbdx3b5WiaN5-zrxBv3iqQEVQ/exec')">
+            <div class="card" onclick="launchSite('https://www.coolmathgames.com')">
                 <div class="card-img g3"></div>
-                <div class="card-info">
-                    <div class="card-title">CoolMathGames</div>
-                </div>
+                <div class="card-info">CoolMathGames</div>
             </div>
 
-            <div class="card" onclick="openSite('https://docs.google.com/forms/d/e/1FAIpQLScNj9XtHaiqe-6pKGP6H1VgGfEvahCRljGNO8L9x2WMdyfbBw/viewform?usp=header')">
+            <div class="card" onclick="launchSite('https://docs.google.com/forms/d/e/1FAIpQLScNj9XtHaiqe-6pKGP6H1VgGfEvahCRljGNO8L9x2WMdyfbBw/viewform')">
                 <div class="card-img g4"></div>
-                <div class="card-info">
-                    <div class="card-title">suggestions?</div>
-                </div>
+                <div class="card-info">Suggestions?</div>
             </div>
 
-             </div>
-    </div>
-
-    <div id="player-view">
-        <div class="player-bar">
-            <button class="back-btn" onclick="closePlayer()">← Back to Browse</button>
-            <span style="margin-left: 15px; font-size: 14px; color: #666;" id="now-playing">Viewing External Source</span>
         </div>
-        <iframe id="main-frame" src="about:blank"></iframe>
     </div>
 
     <script>
-        // --- CONFIGURATION ---
-        const CORRECT_KEY = "98714"; // CHANGE THIS TO YOUR PASSWORD
-
-        // --- KEY SYSTEM FUNCTIONS ---
-        const passcodeField = document.getElementById('passcode');
-        
-        // Allow pressing "Enter" key
-        passcodeField.addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                checkKey();
-            }
-        });
+        const CORRECT_KEY = "98714";
 
         function checkKey() {
-            const input = passcodeField.value;
+            const input = document.getElementById('passcode').value;
             const error = document.getElementById('error-msg');
-            const lockScreen = document.getElementById('lock-screen');
-
+            const lock = document.getElementById('lock-screen');
             if (input === CORRECT_KEY) {
-                lockScreen.style.opacity = '0';
-                setTimeout(() => {
-                    lockScreen.style.display = 'none';
-                }, 500);
+                lock.style.opacity = '0';
+                setTimeout(() => { lock.style.display = 'none'; }, 500);
             } else {
                 error.style.opacity = '1';
-                passcodeField.value = '';
                 setTimeout(() => { error.style.opacity = '0'; }, 2000);
             }
         }
 
-        // --- NAVIGATION FUNCTIONS ---
-        const playerView = document.getElementById('player-view');
-        const mainFrame = document.getElementById('main-frame');
-        const nowPlaying = document.getElementById('now-playing');
+        // --- THE FIX: CLOAKED LAUNCHER ---
+        function launchSite(url) {
+            // 1. Create a new window
+            const win = window.open('about:blank', '_blank');
+            if (!win) {
+                alert("Please allow pop-ups for this site to work!");
+                return;
+            }
 
-        function openSite(url) {
-            mainFrame.src = url;
-            playerView.style.display = 'flex';
-            nowPlaying.innerText = "Viewing: " + url;
+            // 2. Style the new window to be fullscreen
+            win.document.body.style.margin = '0';
+            win.document.body.style.height = '100vh';
+            win.document.body.style.overflow = 'hidden';
+
+            // 3. Create an iframe inside the new blank window
+            const iframe = win.document.createElement('iframe');
+            iframe.style.border = 'none';
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            iframe.style.margin = '0';
+            iframe.src = url;
+
+            // 4. Inject the iframe
+            win.document.body.appendChild(iframe);
         }
 
-        function closePlayer() {
-            playerView.style.display = 'none';
-            mainFrame.src = 'about:blank'; // Stop the site from running in background
-        }
+        // Enter key listener
+        document.getElementById('passcode').addEventListener("keypress", (e) => {
+            if (e.key === "Enter") checkKey();
+        });
     </script>
 </body>
 </html>
-
-
