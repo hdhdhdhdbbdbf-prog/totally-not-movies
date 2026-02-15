@@ -3,251 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unblocked Movie OS</title>
+    <title>NEXUS DASHBOARD</title>
     <style>
-        /* --- CORE VARIABLES --- */
         :root {
-            --bg-dark: #0f0f11;
-            --bg-card: #1a1a1d;
-            --primary: #e50914; 
-            --accent: #00f2ff;
-            --text-main: #ffffff;
-            --text-dim: #a1a1a1;
-            --transition: all 0.3s ease;
+            --primary: #ff3e3e;
+            --bg: #050505;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #ffffff;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            background: var(--bg);
+            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #050505 100%);
+            color: var(--text);
             height: 100vh;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
         }
 
-        /* --- LOCK SCREEN --- */
-        #lock-screen {
+        /* --- AUTH SCREEN --- */
+        #auth-screen {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background: #000;
-            z-index: 9999;
+            z-index: 1000;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.5s;
+            transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .lock-box {
+        .auth-card {
             text-align: center;
-            background: #111;
             padding: 40px;
-            border-radius: 10px;
-            border: 1px solid #333;
-            box-shadow: 0 0 50px rgba(229, 9, 20, 0.2);
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            width: 320px;
         }
 
-        .lock-input {
-            padding: 10px 15px;
-            border-radius: 5px;
-            border: 1px solid #333;
-            background: #222;
+        .auth-card h1 { font-size: 1.5rem; margin-bottom: 20px; letter-spacing: 2px; }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border);
+            border-radius: 12px;
             color: white;
-            font-size: 16px;
-            outline: none;
-            width: 200px;
             text-align: center;
+            font-size: 1.2rem;
+            outline: none;
             margin-bottom: 15px;
         }
 
-        .unlock-btn {
-            padding: 10px 25px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: var(--transition);
+        input:focus { border-color: var(--primary); }
+
+        /* --- MAIN UI --- */
+        .container {
+            padding: 40px;
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
         }
 
-        .error-msg {
-            color: red;
-            font-size: 12px;
-            margin-top: 10px;
-            opacity: 0;
-        }
-
-        /* --- HEADER --- */
         header {
-            padding: 20px 40px;
             display: flex;
             justify-content: space-between;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
-            position: absolute;
-            top: 0;
-            width: 100%;
-            z-index: 100;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
         }
 
-        .logo {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--primary);
-            cursor: pointer;
-        }
+        .logo { font-weight: 800; font-size: 1.4rem; color: var(--primary); }
+        .clock { font-family: monospace; opacity: 0.6; }
 
-        /* --- GRID --- */
-        #home-view {
-            padding: 120px 40px 40px 40px;
-            overflow-y: auto;
-            height: 100%;
-        }
-
-        .movie-grid {
+        .app-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 20px;
         }
 
-        .card {
-            background: var(--bg-card);
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: var(--transition);
-            position: relative;
-            aspect-ratio: 16/9;
-            border: 1px solid transparent;
-        }
-
-        .card:hover {
-            transform: scale(1.05);
-            border-color: var(--text-main);
-        }
-
-        .card-img {
-            width: 100%;
-            height: 100%;
+        .app-item {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            aspect-ratio: 1;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            color: white;
         }
 
-        .g1 { background: linear-gradient(45deg, #11998e, #38ef7d); }
-        .g2 { background: linear-gradient(45deg, #ff416c, #ff4b2b); }
-        .g3 { background: linear-gradient(45deg, #833ab4, #fd1d1d); }
-        .g4 { background: linear-gradient(45deg, #00f2ff, #001f3f); }
-
-        .card-info {
-            position: absolute;
-            bottom: 0;
-            padding: 10px;
-            background: rgba(0,0,0,0.8);
-            width: 100%;
-            font-size: 12px;
+        .app-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(255, 62, 62, 0.2);
         }
+
+        .icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .label { font-size: 0.85rem; font-weight: 600; opacity: 0.8; }
+
+        /* UI Colors */
+        .c-red { color: #ff4d4d; }
+        .c-blue { color: #4d94ff; }
+        .c-green { color: #4dff88; }
+        .c-purple { color: #944dff; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="lock-screen">
-        <div class="lock-box">
-            <h2 style="color:var(--primary); margin-bottom:15px;">SECURE ACCESS</h2>
-            <input type="password" id="passcode" class="lock-input" placeholder="Enter Key...">
-            <br>
-            <button class="unlock-btn" onclick="checkKey()">ENTER</button>
-            <div class="error-msg" id="error-msg">Access Denied</div>
+    <div id="auth-screen">
+        <div class="auth-card">
+            <h1>SYSTEM LOCKED</h1>
+            <input type="password" id="pw" placeholder="•••••" autofocus>
+            <p id="hint" style="font-size: 10px; opacity: 0.4;">ENTER PASSCODE TO BOOT</p>
         </div>
     </div>
 
-    <header>
-        <div class="logo">UNBLOCKED MOVIES OS v67</div>
-    </header>
+    <div class="container">
+        <header>
+            <div class="logo">NEXUS_OS // V.67</div>
+            <div class="clock" id="timer">00:00:00</div>
+        </header>
 
-    <div id="home-view">
-        <h3 style="margin-bottom:20px; color:var(--text-dim)">Recommended for You</h3>
-        <div class="movie-grid">
-            
-            <div class="card" onclick="launchSite('https://fmovies.ps/')">
-                <div class="card-img g1"></div>
-                <div class="card-info">F Movies</div>
+        <section>
+            <h2 style="font-size: 0.7rem; letter-spacing: 2px; opacity: 0.4; margin-bottom: 15px;">MEDIA & STREAMING</h2>
+            <div class="app-grid">
+                <div class="app-item" onclick="launch('https://fmovies.ps/')">
+                    <span class="icon c-red">▶</span>
+                    <span class="label">FMovies</span>
+                </div>
+                <div class="app-item" onclick="launch('https://hianime.to')">
+                    <span class="icon c-purple">⛩</span>
+                    <span class="label">HiAnime</span>
+                </div>
+                <div class="app-item" onclick="launch('https://youtube.com')">
+                    <span class="icon c-red">📺</span>
+                    <span class="label">YouTube</span>
+                </div>
             </div>
+        </section>
 
-            <div class="card" onclick="launchSite('https://hianime.to')">
-                <div class="card-img g2"></div>
-                <div class="card-info">HiAnime</div>
-            </div>
-
-            <div class="card" onclick="launchSite('https://www.coolmathgames.com')">
-                <div class="card-img g3"></div>
-                <div class="card-info">CoolMathGames</div>
-            </div>
-
-            <div class="card" onclick="launchSite('https://docs.google.com/forms/d/e/1FAIpQLScNj9XtHaiqe-6pKGP6H1VgGfEvahCRljGNO8L9x2WMdyfbBw/viewform')">
-                <div class="card-img g4"></div>
-                <div class="card-info">Suggestions?</div>
-            </div>
-
-        </div>
+        <section>
+            <h2 style="font-size: 0.7rem; letter-spacing: 2px; opacity: 0.4; margin-bottom: 15px;">GAMES & APPS</h2>
+            <div class="app-grid">
+                <div class="app-item" onclick="launch('https://www.coolmathgames.com')">
+                    <span class="icon c-blue">🎮</span>
+                    <span class="label">CoolMath</span>
+                </div>
+                <div class="app-item" onclick="launch('https://poki.com')">
+                    <span class="icon c-green">🎲</span>
+                    <span class="label">Poki</span>
+                </div>
+                <div class="app-item" onclick="launch('https://google.com')">
+                    <span class="icon">🔍</span>
+                    <span class="label">Google</span>
+                </div>
+                </div>
+        </section>
     </div>
 
     <script>
-        const CORRECT_KEY = "98714";
+        const KEY = "98714";
 
-        function checkKey() {
-            const input = document.getElementById('passcode').value;
-            const error = document.getElementById('error-msg');
-            const lock = document.getElementById('lock-screen');
-            if (input === CORRECT_KEY) {
-                lock.style.opacity = '0';
-                setTimeout(() => { lock.style.display = 'none'; }, 500);
-            } else {
-                error.style.opacity = '1';
-                setTimeout(() => { error.style.opacity = '0'; }, 2000);
+        // Handle Password
+        const input = document.getElementById('pw');
+        input.addEventListener('input', () => {
+            if (input.value === KEY) {
+                document.getElementById('auth-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('auth-screen').style.display = 'none';
+                }, 600);
             }
-        }
-
-        // --- THE FIX: CLOAKED LAUNCHER ---
-        function launchSite(url) {
-            // 1. Create a new window
-            const win = window.open('about:blank', '_blank');
-            if (!win) {
-                alert("Please allow pop-ups for this site to work!");
-                return;
-            }
-
-            // 2. Style the new window to be fullscreen
-            win.document.body.style.margin = '0';
-            win.document.body.style.height = '100vh';
-            win.document.body.style.overflow = 'hidden';
-
-            // 3. Create an iframe inside the new blank window
-            const iframe = win.document.createElement('iframe');
-            iframe.style.border = 'none';
-            iframe.style.width = '100%';
-            iframe.style.height = '100%';
-            iframe.style.margin = '0';
-            iframe.src = url;
-
-            // 4. Inject the iframe
-            win.document.body.appendChild(iframe);
-        }
-
-        // Enter key listener
-        document.getElementById('passcode').addEventListener("keypress", (e) => {
-            if (e.key === "Enter") checkKey();
         });
+
+        // Clock Function
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('timer').innerText = now.toLocaleTimeString();
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // Safe Launcher
+        function launch(url) {
+            const win = window.open('about:blank', '_blank');
+            if (win) {
+                win.document.body.style.margin = '0';
+                win.document.body.style.height = '100vh';
+                win.document.body.style.background = '#000';
+                
+                const ifr = win.document.createElement('iframe');
+                ifr.style.width = '100%';
+                ifr.style.height = '100%';
+                ifr.style.border = 'none';
+                ifr.setAttribute('allowfullscreen', 'true');
+                ifr.src = url;
+                
+                win.document.body.appendChild(ifr);
+            } else {
+                alert("Pop-up blocked! Allow pop-ups to open apps.");
+            }
+        }
     </script>
 </body>
 </html>
